@@ -41,3 +41,29 @@ def build_documents(tasks, frameworks, mappings):
 
     # Frameworks
     for _, row in frameworks.iterrows():
+        for doc, vec in zip(docs, vectors):
+        collection.add(
+            ids=[doc["id"]],
+            documents=[doc["text"]],
+            metadatas=[doc["metadata"]],
+            embeddings=[vec]
+        )
+
+    return "Ingestion completed."
+
+
+# -----------------------------
+# FLOW
+# -----------------------------
+
+@flow(name="productivity-advisor-ingestion")
+def ingestion_flow():
+    tasks, frameworks, mappings = load_csv_files()
+    docs = build_documents(tasks, frameworks, mappings)
+    vectors = embed_documents(docs)
+    result = store_in_chroma(docs, vectors)
+    return result
+
+
+if __name__ == "__main__":
+    ingestion_flow()
