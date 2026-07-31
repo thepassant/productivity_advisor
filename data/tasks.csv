@@ -1,0 +1,201 @@
+id,task,category,difficulty,duration_estimate
+1,Write a project report,work,medium,120
+2,Clean the kitchen,home,easy,30
+3,Study for exam,study,hard,180
+4,Prepare weekly meal plan,home,medium,45
+5,Do a 30-minute workout,fitness,medium,30
+6,Organize workspace,home,easy,20
+7,Review pull requests,work,medium,60
+8,Read 20 pages,personal,easy,30
+9,Plan tomorrow's schedule,planning,easy,15
+10,Write documentation,work,medium,90
+11,Practice coding problems,study,medium,60
+12,Vacuum the living room,home,easy,20
+13,Write meeting notes,work,easy,15
+14,Prepare presentation slides,work,medium,120
+15,Do laundry,home,easy,40
+16,Weekly grocery shopping,errands,medium,60
+17,Go for a walk,fitness,easy,20
+18,Meditate,personal,easy,10
+19,Organize digital files,home,medium,45
+20,Respond to emails,work,easy,20
+21,Brainstorm ideas,creative,medium,40
+22,Sketch design concepts,creative,medium,60
+23,Water plants,home,easy,10
+24,Clean bathroom,home,medium,35
+25,Write code for feature,work,hard,150
+26,Debug application,work,hard,180
+27,Review study notes,study,easy,25
+28,Practice language learning,study,medium,40
+29,Stretching routine,fitness,easy,15
+30,Meal prep for 3 days,home,medium,60
+31,Organize bookshelf,home,easy,25
+32,Pay monthly bills,errands,easy,15
+33,Update resume,career,medium,45
+34,Apply for job,career,medium,30
+35,Clean fridge,home,medium,30
+36,Write blog post,creative,medium,90
+37,Record video content,creative,hard,120
+38,Edit video content,creative,hard,150
+39,Practice piano,personal,medium,45
+40,Practice drawing,creative,medium,60
+41,Sort wardrobe,home,medium,50
+42,Iron clothes,home,easy,20
+43,Organize email inbox,work,medium,40
+44,Backup files,home,easy,15
+45,Plan weekly goals,planning,medium,30
+46,Plan monthly goals,planning,medium,40
+47,Do strength training,fitness,hard,45
+48,Go for a run,fitness,medium,30
+49,Attend online lecture,study,medium,60
+50,Write summary of lecture,study,medium,40
+51,Clean windows,home,medium,35
+52,Organize kitchen cabinets,home,medium,45
+53,Review financial budget,finance,medium,30
+54,Track expenses,finance,easy,15
+55,Prepare tax documents,finance,hard,120
+56,Practice meditation breathing,personal,easy,10
+57,Journal daily thoughts,personal,easy,15
+58,Organize photos,home,medium,40
+59,Clean car interior,home,medium,45
+60,Wash car exterior,home,medium,40
+61,Practice yoga,fitness,medium,30
+62,Attend gym session,fitness,hard,60
+63,Study chapter summary,study,medium,45
+64,Solve math problems,study,hard,60
+65,Practice coding interview,career,hard,90
+66,Update LinkedIn profile,career,easy,20
+67,Organize pantry,home,medium,40
+68,Clean balcony,home,medium,35
+69,Prepare smoothie,home,easy,10
+70,Cook dinner,home,medium,45
+71,Practice public speaking,career,hard,60
+72,Write cover letter,career,medium,45
+73,Attend team meeting,work,easy,30
+74,Prepare meeting agenda,work,medium,20
+75,Analyze project requirements,work,hard,90
+76,Write unit tests,work,medium,60
+77,Refactor code,work,hard,120
+78,Review architecture diagrams,work,medium,45
+79,Organize cables,home,easy,20
+80,Clean bedroom,home,medium,40
+81,Change bedsheets,home,easy,15
+82,Organize wardrobe drawers,home,medium,35
+83,Practice mindfulness,personal,easy,10
+84,Read research paper,study,hard,60
+85,Write research summary,study,medium,45
+86,Practice typing speed,personal,easy,15
+87,Learn new software tool,study,medium,50
+88,Practice guitar,personal,medium,45
+89,Practice singing,personal,medium,30
+90,Do HIIT workout,fitness,hard,30
+91,Go cycling,fitness,medium,45
+92,Clean living room,home,medium,40
+93,Organize drawers,home,easy,20
+94,Prepare lunchbox,home,easy,15
+95,Review calendar events,planning,easy,10
+96,Plan weekend activities,planning,easy,20
+97,Practice handwriting,personal,easy,20
+98,Learn new recipe,home,medium,40
+99,Practice chess puzzles,personal,medium,30
+100,Study flashcards,study,easy,20
+101,Write poetry,creative,medium,30
+102,Paint watercolor,creative,medium,45
+103,Practice photography,creative,medium,40
+104,Edit photos,creative,medium,45
+105,Organize garage,home,hard,120
+106,Clean garden,home,medium,60
+107,Trim plants,home,easy,20
+108,Practice running intervals,fitness,hard,40
+109,Do mobility exercises,fitness,easy,15
+110,Practice breathing exercises,personal,easy,10
+111,Review project backlog,work,medium,30
+112,Write sprint tasks,work,medium,40
+113,Analyze metrics,work,hard,60
+114,Prepare deployment checklist,work,medium,45
+115,Test application manually,work,medium,60
+116,Write API documentation,work,medium,90
+117,Review logs,work,medium,40
+118,Fix bugs,work,hard,120
+119,Optimize database queries,work,hard,150
+120,Review security guidelines,work,medium,45
+121,Practice exam questions,study,medium,40
+122,Write essay draft,study,hard,90
+123,Edit essay,study,medium,60
+124,Practice vocabulary,study,easy,20
+125,Review lecture notes,study,easy,25
+126,Practice grammar exercises,study,medium,30
+127,Solve physics problems,study,hard,60
+128,Practice algorithms,study,hard,90
+129,Review flashcards,study,easy,20
+130,Write study plan,study,medium,30
+131,Practice balance exercises,fitness,easy,15
+132,Do pilates,fitness,medium,45
+133,Practice boxing drills,fitness,hard,45
+134,Go swimming,fitness,medium,60
+135,Practice stretching routine,fitness,easy,15
+136,Clean office desk,home,easy,15
+137,Organize stationery,home,easy,10
+138,Clean microwave,home,easy,10
+139,Clean oven,home,medium,40
+140,Organize medicine cabinet,home,medium,30
+141,Sort old documents,home,medium,45
+142,Shred papers,home,easy,10
+143,Organize wardrobe shelves,home,medium,35
+144,Clean mirrors,home,easy,15
+145,Dust furniture,home,easy,20
+146,Organize kids' toys,home,medium,30
+147,Clean pet area,home,medium,30
+148,Prepare breakfast,home,easy,15
+149,Prepare snacks,home,easy,10
+150,Organize fridge shelves,home,medium,30
+151,Practice drawing shapes,creative,easy,20
+152,Practice shading,creative,medium,30
+153,Practice color blending,creative,medium,40
+154,Write short story,creative,medium,45
+155,Practice calligraphy,creative,medium,40
+156,Practice digital art,creative,hard,90
+157,Practice animation basics,creative,hard,120
+158,Practice sculpting,creative,hard,90
+159,Practice origami,creative,easy,20
+160,Practice sewing,creative,medium,45
+161,Practice knitting,creative,medium,45
+162,Practice crochet,creative,medium,45
+163,Practice pottery,creative,hard,120
+164,Practice woodworking,creative,hard,150
+165,Practice metalworking,creative,hard,150
+166,Practice jewelry making,creative,medium,60
+167,Practice candle making,creative,medium,45
+168,Practice soap making,creative,medium,45
+169,Practice baking,home,medium,60
+170,Practice cooking techniques,home,medium,45
+171,Practice knife skills,home,medium,30
+172,Clean stovetop,home,easy,15
+173,Clean dishwasher,home,medium,30
+174,Clean washing machine,home,medium,30
+175,Organize cleaning supplies,home,easy,15
+176,Organize spice rack,home,easy,15
+177,Organize cutlery drawer,home,easy,10
+178,Organize pots and pans,home,medium,30
+179,Clean dining table,home,easy,10
+180,Clean chairs,home,easy,15
+181,Clean sofa,home,medium,40
+182,Vacuum carpet,home,medium,30
+183,Clean curtains,home,medium,45
+184,Organize shoe rack,home,easy,20
+185,Clean hallway,home,easy,20
+186,Clean entryway,home,easy,20
+187,Organize mail,home,easy,10
+188,Sort recycling,home,easy,10
+189,Take out trash,home,easy,10
+190,Prepare fruit salad,home,easy,15
+191,Prepare sandwiches,home,easy,15
+192,Prepare soup,home,medium,40
+193,Prepare pasta,home,medium,30
+194,Prepare rice dish,home,medium,30
+195,Prepare dessert,home,medium,45
+196,Prepare smoothie bowl,home,easy,15
+197,Prepare salad,home,easy,15
+198,Prepare grilled vegetables,home,medium,30
+199,Prepare roasted chicken,home,medium,60
+200,Prepare fish dish,home,medium,45

@@ -1,0 +1,61 @@
+id,name,description,steps,best_for,limitations,tags
+1,Pomodoro Technique,Time-boxing method using 25/5 focus cycles,"Work 25 minutes, break 5 minutes, repeat",Maintaining focus,Not ideal for deep work,focus;time
+2,Eisenhower Matrix,Prioritization method based on urgency and importance,"List tasks, categorize, execute",Decision-making,Requires discipline,prioritization
+3,GTD (Getting Things Done),Workflow system for organizing tasks,"Capture, Clarify, Organize, Reflect, Engage",Complex workflows,Heavy setup,organization
+4,Time Blocking,Planning method using calendar blocks,"Define blocks, assign tasks, follow schedule",Structured days,Hard for reactive jobs,time;planning
+5,Eat the Frog,Do the hardest task first,"Identify hardest task, complete it first",Procrastination,Not always feasible,motivation
+6,OKRs,Objectives and Key Results framework,"Define objective, set measurable results",Long-term goals,Needs tracking,goals
+7,SMART Goals,Goal-setting method,"Make goals specific, measurable, achievable, relevant, time-bound",Goal clarity,Can be rigid,goals
+8,Spaced Repetition,Memory retention technique,"Review material at increasing intervals",Studying,Requires consistency,study
+9,Deep Work,Focused work without distractions,"Schedule deep sessions, remove distractions",High-focus tasks,Requires quiet environment,focus
+10,2-Minute Rule,Quick task completion rule,"If task <2 minutes, do it now",Small tasks,Not for complex tasks,quick
+11,Kanban,Visual workflow system,"Create board, add tasks, move through stages",Workflow visualization,Can become cluttered,organization
+12,Pareto Principle (80/20),Focus on high-impact tasks,"Identify top 20% tasks, prioritize them",Impactful work,Hard to identify 20%,prioritization
+13,Parkinson’s Law,Work expands to fill time,"Set strict deadlines",Time efficiency,May cause stress,time
+14,Bullet Journaling,Analog planning system,"Create index, logs, collections",Personal planning,Requires manual writing,planning
+15,Ivy Lee Method,Daily top 6 tasks,"Write 6 tasks, prioritize, complete",Daily planning,Limited flexibility,prioritization
+16,Time Boxing,Fixed time slots,"Assign fixed durations to tasks",Time control,May feel rigid,time
+17,Energy-Based Scheduling,Match tasks to energy levels,"Track energy, assign tasks accordingly",Energy management,Requires self-awareness,energy
+18,ABCDE Method,Task prioritization,"Categorize tasks A-E",Prioritization,Can oversimplify,prioritization
+19,MIT (Most Important Task),Focus on one key task,"Choose MIT, complete it first",Daily focus,Not ideal for multitasking,focus
+20,Weekly Review,Weekly planning ritual,"Review tasks, goals, progress",Reflection,Time-consuming,planning
+21,Monthly Review,Monthly planning ritual,"Review goals, adjust plans",Long-term planning,Requires consistency,planning
+22,Time Audit,Analyze time usage,"Track time, categorize, optimize",Time awareness,Requires tracking,time
+23,Task Batching,Group similar tasks,"Batch tasks, execute together",Efficiency,Not ideal for varied tasks,efficiency
+24,Theme Days,Assign themes to days,"Choose theme, plan tasks accordingly",Context switching,May reduce flexibility,planning
+25,Focus Blocks,Longer focus periods,"Work 60–90 minutes, break 10–15",Deep work,Requires stamina,focus
+26,Daily Highlight,Choose one highlight,"Pick highlight, plan around it",Simplicity,May ignore other tasks,focus
+27,Rule of Three,Pick three daily goals,"Choose 3 goals, complete them",Daily clarity,Limited scope,goals
+28,Not-To-Do List,Avoid harmful tasks,"List tasks to avoid",Reducing distractions,Requires discipline,focus
+29,Mind Mapping,Visual idea organization,"Create central idea, branch topics",Creativity,Can become messy,creative
+30,Time Budgeting,Allocate time like money,"Assign time budgets",Time control,Hard to estimate,time
+31,Priority Pyramid,Visual prioritization,"Place tasks in pyramid levels",Clarity,Requires setup,prioritization
+32,Daily Standup,Quick daily check-in,"State yesterday, today, blockers",Team productivity,Not for solo work,team
+33,Retrospective,Review past work,"Discuss what worked, what didn’t",Improvement,Needs honesty,reflection
+34,Habit Stacking,Attach new habits to existing ones,"Choose anchor habit, add new habit",Habit building,Requires consistency,habits
+35,5-Second Rule,Beat hesitation,"Count 5-4-3-2-1, act",Motivation,Not for complex tasks,motivation
+36,Zen to Done,Simplified GTD,"Capture, process, plan, do",Simplicity,Less structured,organization
+37,Time Anchoring,Anchor tasks to fixed times,"Choose anchors, attach tasks",Routine building,May feel rigid,routine
+38,Task Decomposition,Break tasks into smaller parts,"Split tasks into sub-tasks",Large tasks,Time-consuming,planning
+39,Backwards Planning,Plan from the end goal,"Define end, work backwards",Projects,Requires clarity,planning
+40,Daily Scorecard,Score daily productivity,"Rate tasks, track score",Tracking,May cause pressure,tracking
+41,Work Sprints,Short intense work periods,"Sprint 45 minutes, break 15",Focus,Requires energy,focus
+42,Micro-Goals,Tiny goals,"Break tasks into micro-goals",Motivation,May feel slow,goals
+43,Task Rotation,Rotate task types,"Switch tasks periodically",Avoiding burnout,May reduce deep focus,energy
+44,Priority Buckets,Group tasks into buckets,"Define buckets, assign tasks",Organization,Requires setup,organization
+45,Time Horizons,Plan across horizons,"Short, medium, long-term planning",Goal planning,Complex,goals
+46,Daily Rituals,Fixed daily habits,"Define rituals, follow them",Routine,May feel rigid,routine
+47,Weekly Themes,Weekly focus themes,"Choose theme, align tasks",Focus,May reduce flexibility,planning
+48,Focus Timer,Use timers for focus,"Set timer, work until it ends",Focus,Not ideal for creative work,focus
+49,Task Scoring,Score tasks by impact,"Assign scores, prioritize",Impact,Requires judgment,prioritization
+50,Work Blocks,Structured work blocks,"Define blocks, execute tasks",Structure,May reduce spontaneity,planning
+51,Goal Mapping,Map goals to tasks,"Break goals into tasks",Goal execution,Requires clarity,goals
+52,Priority Ladder,Rank tasks,"Order tasks by importance",Prioritization,May be subjective,prioritization
+53,Task Calendar,Calendar-based tasks,"Add tasks to calendar",Scheduling,May overload calendar,time
+54,Daily Checklist,Checklist-based productivity,"Create checklist, complete items",Simplicity,May oversimplify,planning
+55,Weekly Checklist,Weekly checklist,"List weekly tasks",Weekly planning,May become long,planning
+56,Task Templates,Reusable templates,"Create templates, reuse",Efficiency,Requires initial setup,efficiency
+57,Goal Templates,Reusable goal templates,"Create templates, reuse",Goal planning,Requires setup,goals
+58,Task Journaling,Write about tasks,"Journal tasks, reflect",Reflection,Time-consuming,reflection
+59,Priority Matrix,Matrix-based prioritization,"Define axes, place tasks",Clarity,Requires setup,prioritization
+60,Focus Ritual,Pre-focus routine,"Define ritual, start work",Focus,Requires consistency,focus
