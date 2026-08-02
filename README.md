@@ -24,11 +24,11 @@ The application helps users organize work, prioritize tasks, and discover suitab
 
 ```
                 ┌────────────────────┐
-                │   CSV Datasets      │
+                │   CSV Datasets     │
                 └─────────┬──────────┘
                           │
                           ▼
-              ┌──────────────────────┐
+              ┌───────────────────────┐
               │  Prefect Ingestion    │
               │ • Load CSVs           │
               │ • Chunk Documents     │
@@ -38,7 +38,7 @@ The application helps users organize work, prioritize tasks, and discover suitab
                         ▼
               ┌──────────────────────┐
               │   Chroma Vector DB   │
-              └─────────┬─────────────┘
+              └─────────┬────────────┘
                         │
                         ▼
                  User Question
