@@ -24,13 +24,13 @@ The application helps users organize work, prioritize tasks, and discover suitab
 
 ```
                 ┌────────────────────┐
-                │   CSV Datasets     │
+                │   CSV Dataset      │
                 └─────────┬──────────┘
                           │
                           ▼
               ┌───────────────────────┐
               │  Prefect Ingestion    │
-              │ • Load CSVs           │
+              │ • Load data           │
               │ • Chunk Documents     │
               │ • Generate Embeddings │
               └─────────┬─────────────┘
@@ -97,7 +97,7 @@ productivity-advisor/
 │   └── benchmark.py
 │
 ├── ingestion/
-│   ├── flow.py
+│   ├── ingestion.ipynb
 │   ├── chunking.py
 │   ├── embedding.py
 │   └── ui.py
