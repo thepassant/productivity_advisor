@@ -1,33 +1,9 @@
 import json
 from time import time
 from openai import OpenAI
-from ingestion.ingest import ingest 
+from search import search
 
 client = OpenAI()
-index = ingest.load_index()
-
-
-# -----------------------------
-# SEARCH
-# -----------------------------
-def search(query):
-    boost = {
-        "task": 2.15,
-        "instructions": 1.8,
-        "reasoning": 2.2,
-        "tags": 1.4,
-        "category": 1.1,
-        "difficulty": 0.9
-    }
-
-    results = index.search(
-        query=query,
-        filter_dict={},
-        boost_dict=boost,
-        num_results=10
-    )
-
-    return results
 
 
 # -----------------------------
