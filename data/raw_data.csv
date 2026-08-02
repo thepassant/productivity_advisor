@@ -58,7 +58,7 @@ id,task,category,difficulty,duration_estimate,framework_id,framework_name,reason
 57,Practice mindfulness meditation,personal,easy,10,34,Habit Stacking,"Stacking meditation onto a daily habit increases consistency.","Sit comfortably, breathe deeply, observe thoughts.","personal;meditation"
 58,Review coding notes,study,easy,20,8,Spaced Repetition,"Reviewing notes at intervals improves retention.","Read notes, highlight key concepts, summarize.","study;coding"
 59,Clean kitchen sink,home,easy,10,10,2-Minute Rule,"Quick cleaning tasks should be done immediately.","Scrub sink, rinse, wipe dry.","home;cleaning"
-60,Write product feature ideas,work,medium,30,29,Mind Mapping,"Mind Mapping helps visualize feature relationships.","Create central node, branch features, add notes.","work
+60,Write product feature ideas,work,medium,30,29,Mind Mapping,"Mind Mapping helps visualize feature relationships.","Create central node, branch features, add notes.","work"
 61,Practice stretching routine,fitness,easy,15,46,Daily Rituals,"Daily stretching improves mobility.","Stretch hamstrings, quads, shoulders, hold each 20s.","fitness;stretching"
 62,Organize desktop files,home,easy,20,3,GTD,"GTD helps categorize digital clutter.","Sort files, create folders, delete duplicates.","home;digital"
 63,Write daily task list,planning,easy,10,26,Daily Highlight,"Highlighting one key task improves focus.","List tasks, choose highlight, schedule time.","planning;organization"
