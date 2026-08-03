@@ -1,10 +1,10 @@
 # 🚀 Productivity Advisor
 
-A Retrieval-Augmented Generation (RAG) application that provides personalized productivity guidance by combining a curated productivity knowledge base with a large language model.
+A RAG application that provides personalized productivity guidance by combining a curated productivity knowledge base with a large language model. built as a project for Datacamp(llm-zoomcamp)
 
 ## Overview
 
-Productivity Advisor is a RAG-based assistant designed to help users become more productive by recommending appropriate productivity frameworks, suggesting tasks, improving planning, and reducing overwhelm.
+Productivity Advisor is an assistant designed to help users become more productive by recommending appropriate productivity frameworks, suggesting tasks, improving planning, and reducing overwhelm.
 
 Instead of relying only on a language model's general knowledge, the application retrieves relevant examples and productivity strategies from a structured dataset before generating a response. This produces recommendations that are more consistent, explainable, and grounded in the project's knowledge base.
 
@@ -45,7 +45,7 @@ The system helps users:
 
 The project uses a custom productivity dataset generated with ChatGPT and stored in the `data/` directory.
 
-The dataset contains **250 productivity task records**, where each record represents a task paired with an appropriate productivity framework and implementation guidance.
+The dataset contains 250 productivity task records, where each record represents a task paired with an appropriate productivity framework and implementation guidance.
 
 Each row contains the following fields:
 
@@ -172,140 +172,116 @@ Users can interact with Productivity Advisor using natural language, for example
 productivity-advisor/
 │
 ├── app/
-│   ├── ui.py
-│   ├── monitoring.py
-│   └── feedback.py
+│   └── app.py
 │
-├── config/
-│   ├── prompts.py
-│   └── settings.py
+├── db/
+│   ├── db_prep.py
+│   └── db.py
 │
 ├── data/
 │   ├── raw_data.csv
-│   ├── tasks.csv
+│   ├── rag-eval-gpt-4o-mini.csv
+│   ├── ground-truth-retrieval.csv
 │   └── cleaned_data.csv
-│
-├── evaluation/
-│   ├── retrieval_eval.py
-│   ├── llm_eval.py
-│   └── benchmark.py
 │
 ├── ingestion/
 │   └── ingest.py
 │
 ├── rag/
 │   ├── rag.py
-│   ├── search.py
-│   └── pipeline.py
+│   └── search.py
 │
-├── vectorstore/
-│
-├── docker/
-│   ├── Dockerfile
-│   └── docker-compose.yml
+├── notebooks/
+│   ├── cleaning.ipynb
+│   ├── eval-generated-data.ipynb
+│   └── rag.ipynb
 │
 ├── README.md
 ├── requirements.txt
-└── .env.example
+├── pyproject.toml
+└── uv.lock
 ```
 
 ---
 
-# 🧠 Knowledge Base
-
-The assistant uses four structured datasets:
-
-| Dataset | Description |
-|----------|-------------|
-| **productivity_frameworks.csv** | Productivity methods and frameworks |
-| **tasks.csv** | Example work, study, home and personal tasks |
-| **goals.csv** | Short, medium and long-term goals |
-| **framework_task_mapping.csv** | Relationships between tasks and recommended frameworks |
-
-During ingestion these datasets are:
-
-- Loaded
-- Chunked
-- Embedded
-- Stored inside ChromaDB
-
----
 
 # ⚙️ Installation
 
 Clone the repository
 
 ```bash
-git clone https://github.com/<username>/productivity-advisor.git
+git clone https://github.com/thepassant/productivity-advisor.git
 ```
+## Installation
 
-Create a virtual environment
+### 1. Create a virtual environment
 
 ```bash
-python -m venv .venv
+uv venv
 ```
 
-Activate it
+### 2. Activate the virtual environment
 
-### Windows
+#### Windows
 
 ```bash
 .venv\Scripts\activate
 ```
 
-### Linux / macOS
+#### Linux / macOS
 
 ```bash
 source .venv/bin/activate
 ```
 
-Install dependencies
+### 3. Install dependencies
 
 ```bash
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
-Copy the environment file
+### 4. Copy the environment file
+
+#### Linux / macOS
 
 ```bash
 cp .env.example .env
 ```
 
-Add your API keys to `.env`.
+#### Windows (PowerShell)
 
----
+```powershell
+Copy-Item .env.example .env
+```
+
+#### Windows (Command Prompt)
+
+```cmd
+copy .env.example .env
+```
+
+### 5. Configure environment variables
+
+Open the `.env` file and add your API keys and any required configuration values.
+
 
 # 🚀 Running the Project
 
-## 1. Run Ingestion
-
-```bash
-python ingestion/ui.py
-```
-
-This will:
-
-- Load CSV datasets
-- Generate embeddings
-- Build the Chroma vector database
-
 ---
 
-## 2. Launch the Application
+### 1. Run the Ingestion Pipeline
 
 ```bash
-streamlit run app/ui.py
+python ingestion/ingest.py
 ```
 
 ---
 
-## 3. Run with Docker
+### 2. Launch the Application
 
 ```bash
-docker-compose up --build
+streamlit run app/app.py
 ```
-
----
 
 # 🔍 Retrieval Pipeline
 
@@ -322,35 +298,19 @@ The retrieval process consists of:
 
 # 📊 Evaluation
 
-The project evaluates multiple retrieval strategies.
+for the code of evaluating the system, you can find it in notebooks/rag.ipynb 
 
 ### Retrieval Evaluation
 
-- Semantic Search
-- Keyword Search
-- Hybrid Search
-- LLM Re-ranking
+The basic approach - using minsearch without boosting geave:
+* hitrate: 80%
+* MRR: 60%
 
-### LLM Evaluation
-
-- Prompt comparison
-- Response quality
-- LLM-as-a-Judge scoring
+### RAG flow
+I used LLM-as-a-Judge scoring
 
 The best-performing configuration is used in the final application.
 
----
-
-# 📈 Monitoring
-
-The monitoring dashboard tracks:
-
-- 👍 Positive feedback
-- 👎 Negative feedback
-- Query volume
-- Retrieval latency
-- Most recommended frameworks
-- User satisfaction trends
 
 ---
 
@@ -358,12 +318,9 @@ The monitoring dashboard tracks:
 
 - Python
 - Streamlit
-- Prefect
-- ChromaDB
 - OpenAI API
 - Sentence Transformers
-- Docker
-- SQLite / PostgreSQL
+- SQLite 
 
 ---
 
@@ -375,6 +332,6 @@ This project is licensed under the **MIT License**.
 
 # 🙏 Acknowledgements
 
-Built as the final project for **LLM Zoomcamp**.
+Built as the final project for LLM Zoomcamp.
 
 Special thanks to the Zoomcamp instructors and the open-source community for providing the learning resources that inspired this project.

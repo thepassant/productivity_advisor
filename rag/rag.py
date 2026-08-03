@@ -1,8 +1,9 @@
+import dotenv
 import json
 from time import time
 from openai import OpenAI
-from search import search
 
+dotenv.load_dotenv()
 client = OpenAI()
 
 
