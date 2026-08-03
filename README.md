@@ -37,7 +37,7 @@ The application helps users organize work, prioritize tasks, and discover suitab
                         │
                         ▼
               ┌──────────────────────┐
-              │   Chroma Vector DB   │
+              │   SQLite Vector DB   │
               └─────────┬────────────┘
                         │
                         ▼
@@ -86,10 +86,9 @@ productivity-advisor/
 │   └── settings.py
 │
 ├── data/
-│   ├── productivity_frameworks.csv
+│   ├── raw_data.csv
 │   ├── tasks.csv
-│   ├── goals.csv
-│   └── framework_task_mapping.csv
+│   └── cleaned_data.csv
 │
 ├── evaluation/
 │   ├── retrieval_eval.py
@@ -97,16 +96,11 @@ productivity-advisor/
 │   └── benchmark.py
 │
 ├── ingestion/
-│   ├── ingestion.ipynb
-│   ├── chunking.py
-│   ├── embedding.py
-│   └── ui.py
+│   └── ingest.py
 │
 ├── rag/
-│   ├── retriever.py
-│   ├── query_rewriter.py
-│   ├── reranker.py
-│   ├── generator.py
+│   ├── rag.py
+│   ├── search.py
 │   └── pipeline.py
 │
 ├── vectorstore/
