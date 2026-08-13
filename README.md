@@ -318,11 +318,11 @@ for gpt-4o-mini, among 200 records , we had:
 - 33 (18%) PARTLY_RELEVANT
 - 11 (7%) NON_RELEVANT
 
-We also tested gpt-4o, among 200 records , we had:
+We also tested gpt-4o same results as gpt-5.4-mini , among 200 records , we had:
 
-- 156 (78%) RELEVANT
-- 33 (16.5%) PARTLY_RELEVANT
-- 11 (5.5%) NON_RELEVANT
+- 156 (78) RELEVANT
+- 36 (18%) PARTLY_RELEVANT
+- 8 (4%) NON_RELEVANT
 
 ### MONITORING
 
