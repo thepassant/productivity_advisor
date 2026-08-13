@@ -1,66 +1,67 @@
+import requests
 import streamlit as st
-from rag import rag
 
-# -----------------------------------
-# Streamlit Page Config
-# -----------------------------------
-st.set_page_config(
-    page_title="Productivity Advisor",
-    page_icon="🧠",
-    layout="centered"
-)
+
+API_URL = "http://localhost:8000"
+
 
 st.title("🧠 Productivity Advisor")
-st.write("Ask a productivity question and get an answer grounded in your task database.")
 
-
-# -----------------------------------
-# User Input
-# -----------------------------------
 query = st.text_input("Enter your question:")
 
 model = st.selectbox(
     "Choose model:",
-    ["gpt-4o-mini"],
-    index=0
+    ["gpt-4o-mini"]
 )
 
 
-# -----------------------------------
-# Run RAG Pipeline
-# -----------------------------------
 if st.button("Submit") and query.strip():
-    with st.spinner("Thinking..."):
-        result = rag(query, model=model)
 
-    # -----------------------------------
-    # Display Answer
-    # -----------------------------------
+    response = requests.post(
+        f"{API_URL}/ask",
+        json={
+            "question": query,
+            "model": model,
+        },
+    )
+
+    response.raise_for_status()
+
+    result = response.json()
+
+    st.session_state["conversation_id"] = result["conversation_id"]
+    st.session_state["answer"] = result["answer"]
+
+
+if "answer" in st.session_state:
+
     st.subheader("Answer")
-    st.write(result["answer"])
+    st.write(st.session_state["answer"])
 
-    # -----------------------------------
-    # Display Relevance Evaluation
-    # -----------------------------------
-    st.subheader("Relevance Evaluation")
-    st.write(f"Relevance: {result['relevance']}")
-    st.write(f"Explanation: {result['relevance_explanation']}")
+    col1, col2 = st.columns(2)
 
-    # -----------------------------------
-    # Display Token Usage
-    # -----------------------------------
-    st.subheader("Token Usage")
-    st.write(f"Prompt tokens: {result['prompt_tokens']}")
-    st.write(f"Completion tokens: {result['completion_tokens']}")
-    st.write(f"Total tokens: {result['total_tokens']}")
+    with col1:
+        if st.button("👍"):
+            response = requests.post(
+                f"{API_URL}/feedback",
+                json={
+                    "conversation_id": st.session_state["conversation_id"],
+                    "feedback": 1,
+                },
+            )
 
-    st.write("---")
-    st.write(f"Eval prompt tokens: {result['eval_prompt_tokens']}")
-    st.write(f"Eval completion tokens: {result['eval_completion_tokens']}")
-    st.write(f"Eval total tokens: {result['eval_total_tokens']}")
+            response.raise_for_status()
+            st.success("Thanks for your feedback!")
 
-    # -----------------------------------
-    # Display Cost
-    # -----------------------------------
-    st.subheader("Estimated Cost")
-    st.write(f"${result['openai_cost']:.6f}")
+    with col2:
+        if st.button("👎"):
+            response = requests.post(
+                f"{API_URL}/feedback",
+                json={
+                    "conversation_id": st.session_state["conversation_id"],
+                    "feedback": -1,
+                },
+            )
+
+            response.raise_for_status()
+            st.success("Thanks for your feedback!")
