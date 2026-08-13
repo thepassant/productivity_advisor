@@ -49,25 +49,25 @@ The dataset contains 250 productivity task records, where each record represents
 
 Each row contains the following fields:
 
-| Column | Description |
-|---------|-------------|
-| `task` | The task or activity |
-| `category` | Task category (Work, Study, Home, Fitness, Personal, Creative, etc.) |
-| `difficulty` | Estimated task difficulty |
-| `duration_estimate` | Estimated completion time (minutes) |
-| `framework_name` | Recommended productivity framework |
-| `reasoning` | Why the framework fits the task |
-| `instructions` | Step-by-step guidance |
-| `tags` | Keywords describing the task |
+| Column              | Description                                                          |
+| ------------------- | -------------------------------------------------------------------- |
+| `task`              | The task or activity                                                 |
+| `category`          | Task category (Work, Study, Home, Fitness, Personal, Creative, etc.) |
+| `difficulty`        | Estimated task difficulty                                            |
+| `duration_estimate` | Estimated completion time (minutes)                                  |
+| `framework_name`    | Recommended productivity framework                                   |
+| `reasoning`         | Why the framework fits the task                                      |
+| `instructions`      | Step-by-step guidance                                                |
+| `tags`              | Keywords describing the task                                         |
 
 Example:
 
-| Task | Category | Framework |
-|------|----------|-----------|
-| Write a project summary | Work | Time Blocking |
-| Organize pantry shelves | Home | Task Decomposition |
-| Review study notes | Study | Spaced Repetition |
-| Practice breathing meditation | Personal | Habit Stacking |
+| Task                          | Category | Framework          |
+| ----------------------------- | -------- | ------------------ |
+| Write a project summary       | Work     | Time Blocking      |
+| Organize pantry shelves       | Home     | Task Decomposition |
+| Review study notes            | Study    | Spaced Repetition  |
+| Practice breathing meditation | Personal | Habit Stacking     |
 
 The dataset serves as the knowledge base for the RAG pipeline.
 
@@ -204,7 +204,6 @@ productivity-advisor/
 
 ---
 
-
 # ⚙️ Installation
 
 Clone the repository
@@ -212,6 +211,7 @@ Clone the repository
 ```bash
 git clone https://github.com/thepassant/productivity-advisor.git
 ```
+
 ## Installation
 
 ### 1. Create a virtual environment
@@ -264,7 +264,6 @@ copy .env.example .env
 
 Open the `.env` file and add your API keys and any required configuration values.
 
-
 # 🚀 Running the Project
 
 ---
@@ -298,19 +297,34 @@ The retrieval process consists of:
 
 # 📊 Evaluation
 
-for the code of evaluating the system, you can find it in notebooks/rag.ipynb 
+for the code of evaluating the system, you can find it in notebooks/rag.ipynb
 
 ### Retrieval Evaluation
 
-The basic approach - using minsearch without boosting geave:
-* hitrate: 80%
-* MRR: 60%
+The basic approach - using minsearch without boosting gave:
+
+- hitrate: 80%
+- MRR: 60%
 
 ### RAG flow
+
 I used LLM-as-a-Judge scoring
 
 The best-performing configuration is used in the final application.
 
+for gpt-4o-mini, among 200 records , we had:
+
+- 156 (75%) RELEVANT
+- 33 (18%) PARTLY_RELEVANT
+- 11 (7%) NON_RELEVANT
+
+We also tested gpt-4o, among 200 records , we had:
+
+- 156 (78%) RELEVANT
+- 33 (16.5%) PARTLY_RELEVANT
+- 11 (5.5%) NON_RELEVANT
+
+### MONITORING
 
 ---
 
@@ -320,7 +334,7 @@ The best-performing configuration is used in the final application.
 - Streamlit
 - OpenAI API
 - Sentence Transformers
-- SQLite 
+- SQLite
 
 ---
 
