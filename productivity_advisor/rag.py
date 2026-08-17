@@ -7,6 +7,7 @@ from openai import OpenAI
 from productivity_advisor.search import hybrid_search
 
 dotenv.load_dotenv()
+
 client = OpenAI()
 
 
@@ -15,7 +16,7 @@ client = OpenAI()
 # -----------------------------
 
 DEFAULT_MODEL = "gpt-4.5-mini"
-EVAL_MODEL = "gpt-4o"
+EVAL_MODEL = "gpt-4.5-mini"
 
 
 # -----------------------------
@@ -24,9 +25,10 @@ EVAL_MODEL = "gpt-4o"
 # -----------------------------
 
 MODEL_PRICING = {
-    "gpt-4o-mini": {
-        "input": 0.15,
-        "output": 0.60,
+    "gpt-5.4-mini": {
+        "input": 0.75,
+        "cached_input": 0.075,
+        "output": 4.50,
     },
 }
 
@@ -57,6 +59,27 @@ tags: {tags}
 """.strip()
 
 
+evaluation_prompt_template = """
+You are an expert evaluator for a RAG system.
+Your task is to analyze the relevance of the generated answer to the given question.
+
+Based on the relevance of the generated answer, classify it as:
+"NON_RELEVANT", "PARTLY_RELEVANT", or "RELEVANT".
+
+Question:
+{question}
+
+Generated Answer:
+{answer}
+
+Return ONLY valid JSON:
+
+{{
+    "Relevance": "NON_RELEVANT" | "PARTLY_RELEVANT" | "RELEVANT",
+    "Explanation": "Brief explanation"
+}}
+""".strip()
+
 # -----------------------------
 # BUILD PROMPT
 # -----------------------------
@@ -83,45 +106,33 @@ def llm(prompt, model=DEFAULT_MODEL):
         messages=[
             {
                 "role": "user",
-                "content": prompt
+                "content": prompt,
             }
-        ]
+        ],
     )
 
     answer = response.choices[0].message.content
+
+    cached_prompt_tokens = 0
+
+    if response.usage.prompt_tokens_details:
+        cached_prompt_tokens = (
+            response
+            .usage
+            .prompt_tokens_details
+            .cached_tokens
+            or 0
+        )
 
     token_stats = {
         "prompt_tokens": response.usage.prompt_tokens,
         "completion_tokens": response.usage.completion_tokens,
         "total_tokens": response.usage.total_tokens,
+        "cached_prompt_tokens": cached_prompt_tokens,
     }
 
     return answer, token_stats
 
-
-# -----------------------------
-# EVALUATION PROMPT
-# -----------------------------
-
-evaluation_prompt_template = """
-You are an expert evaluator for a RAG system.
-Your task is to analyze the relevance of the generated answer to the given question.
-
-Based on the relevance of the generated answer, classify it as:
-"NON_RELEVANT", "PARTLY_RELEVANT", or "RELEVANT".
-
-Here is the data for evaluation:
-
-Question: {question}
-Generated Answer: {answer}
-
-Provide your evaluation in parsable JSON:
-
-{
-  "Relevance": "NON_RELEVANT" | "PARTLY_RELEVANT" | "RELEVANT",
-  "Explanation": "[Brief explanation]"
-}
-""".strip()
 
 
 # -----------------------------
@@ -131,57 +142,108 @@ Provide your evaluation in parsable JSON:
 def evaluate_relevance(question, answer):
     prompt = evaluation_prompt_template.format(
         question=question,
-        answer=answer
+        answer=answer,
     )
 
     evaluation, tokens = llm(
         prompt,
-        model=EVAL_MODEL
+        model=EVAL_MODEL,
     )
 
     try:
         json_eval = json.loads(evaluation)
 
-        valid_relevance = {
-            "NON_RELEVANT",
-            "PARTLY_RELEVANT",
-            "RELEVANT",
-        }
-
-        if json_eval.get("Relevance") not in valid_relevance:
-            return {
-                "Relevance": "UNKNOWN",
-                "Explanation": "Invalid relevance value"
-            }, tokens
-
-        return json_eval, tokens
-
     except json.JSONDecodeError:
         return {
             "Relevance": "UNKNOWN",
-            "Explanation": "Failed to parse evaluation"
+            "Explanation": "Failed to parse evaluation",
         }, tokens
 
+    valid_relevance = {
+        "NON_RELEVANT",
+        "PARTLY_RELEVANT",
+        "RELEVANT",
+    }
+
+    relevance = json_eval.get("Relevance")
+
+    if relevance not in valid_relevance:
+        return {
+            "Relevance": "UNKNOWN",
+            "Explanation": "Invalid relevance value",
+        }, tokens
+
+    return {
+        "Relevance": relevance,
+        "Explanation": json_eval.get(
+            "Explanation",
+            "",
+        ),
+    }, tokens
 
 # -----------------------------
 # COST CALCULATION
 # -----------------------------
 
-def calculate_openai_cost(model, tokens):
+def calculate_cost(tokens, model):
     pricing = MODEL_PRICING.get(model)
 
     if pricing is None:
-        return 0.0
+        raise ValueError(
+            f"No pricing configured for model: {model}"
+        )
+
+    input_tokens = tokens["prompt_tokens"]
+    output_tokens = tokens["completion_tokens"]
+
+    cached_tokens = tokens.get(
+        "cached_prompt_tokens",
+        0,
+    )
+
+    if cached_tokens > input_tokens:
+        raise ValueError(
+            "Cached input tokens cannot exceed input tokens"
+        )
+
+    uncached_input_tokens = (
+        input_tokens - cached_tokens
+    )
 
     input_cost = (
-        tokens["prompt_tokens"] / 1_000_000
+        uncached_input_tokens / 1_000_000
     ) * pricing["input"]
 
+    cached_input_cost = (
+        cached_tokens / 1_000_000
+    ) * pricing["cached_input"]
+
     output_cost = (
-        tokens["completion_tokens"] / 1_000_000
+        output_tokens / 1_000_000
     ) * pricing["output"]
 
-    return input_cost + output_cost
+    total_cost = (
+        input_cost
+        + cached_input_cost
+        + output_cost
+    )
+
+    return {
+        "input_cost": input_cost,
+        "cached_input_cost": cached_input_cost,
+        "output_cost": output_cost,
+        "total_cost": total_cost,
+    }
+
+
+def calculate_total_cost(usages):
+    return sum(
+        calculate_cost(
+            usage,
+            model,
+        )["total_cost"]
+        for model, usage in usages
+    )
 
 
 # -----------------------------
@@ -192,7 +254,11 @@ def rag(query, model=DEFAULT_MODEL):
     start_time = time()
 
     # Retrieve relevant documents
+    search_start = time()
+
     search_results = hybrid_search(query)
+
+    search_time = time() - search_start
 
     # Build RAG prompt
     prompt = build_prompt(
@@ -201,58 +267,104 @@ def rag(query, model=DEFAULT_MODEL):
     )
 
     # Generate answer
+    generation_start = time()
+
     answer, token_stats = llm(
         prompt,
-        model=model
+        model=model,
     )
 
-    # Evaluate answer
-    relevance, rel_token_stats = evaluate_relevance(
-        query,
-        answer
+    generation_time = (
+        time() - generation_start
     )
+
+
+    # Evaluate answer
+    evaluation_start = time()
+
+    relevance, rel_token_stats = (
+        evaluate_relevance(
+            query,
+            answer,
+        )
+    )
+
+    evaluation_time = (
+        time() - evaluation_start
+    )
+    #Calculate costs
+    generation_cost = calculate_cost(
+        token_stats,
+        model,
+    )
+
+    evaluation_cost = calculate_cost(
+        rel_token_stats,
+        EVAL_MODEL,
+    )
+
+    total_llm_cost = calculate_total_cost([
+        (model, token_stats),
+        (EVAL_MODEL, rel_token_stats),
+    ])
 
     # Response time
     response_time = time() - start_time
 
-    # Calculate costs
-    openai_cost_rag = calculate_openai_cost(
-        model,
-        token_stats
-    )
-
-    openai_cost_eval = calculate_openai_cost(
-        EVAL_MODEL,
-        rel_token_stats
-    )
-
-    openai_cost = (
-        openai_cost_rag +
-        openai_cost_eval
-    )
-
     return {
         "answer": answer,
+
         "model_used": model,
+
         "response_time": response_time,
+
+        "search_time": search_time,
+
+        "generation_time": generation_time,
+
+        "evaluation_time": evaluation_time,
 
         "relevance": relevance.get(
             "Relevance",
-            "UNKNOWN"
+            "UNKNOWN",
         ),
 
         "relevance_explanation": relevance.get(
             "Explanation",
-            "Failed to parse evaluation"
+            "Failed to parse evaluation",
         ),
 
-        "prompt_tokens": token_stats["prompt_tokens"],
-        "completion_tokens": token_stats["completion_tokens"],
-        "total_tokens": token_stats["total_tokens"],
+        "prompt_tokens": token_stats[
+            "prompt_tokens"
+        ],
 
-        "eval_prompt_tokens": rel_token_stats["prompt_tokens"],
-        "eval_completion_tokens": rel_token_stats["completion_tokens"],
-        "eval_total_tokens": rel_token_stats["total_tokens"],
+        "completion_tokens": token_stats[
+            "completion_tokens"
+        ],
 
-        "openai_cost": openai_cost,
+        "total_tokens": token_stats[
+            "total_tokens"
+        ],
+
+        "cached_prompt_tokens": token_stats[
+            "cached_prompt_tokens"
+        ],
+
+        "eval_prompt_tokens": rel_token_stats[
+            "prompt_tokens"
+        ],
+
+        "eval_completion_tokens": rel_token_stats[
+            "completion_tokens"
+        ],
+
+        "eval_total_tokens": rel_token_stats[
+            "total_tokens"
+        ],
+
+        "cost": {
+            "generation": generation_cost,
+            "evaluation": evaluation_cost,
+            "total": total_llm_cost,
+        },
     }
