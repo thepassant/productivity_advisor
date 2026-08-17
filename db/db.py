@@ -1,5 +1,7 @@
 import os
 
+from dotenv import load_dotenv
+
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
@@ -68,6 +70,25 @@ def init_db():
 
                 CONSTRAINT valid_feedback
                     CHECK (feedback IN (-1, 1))
+            );
+            """
+        )
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS rag_evaluations (
+                id SERIAL PRIMARY KEY,
+                evaluation_run_id UUID NOT NULL,
+                question TEXT NOT NULL,
+
+                retrieval_method TEXT NOT NULL,
+                llm_approach TEXT NOT NULL,
+
+                retrieval_score FLOAT,
+                llm_score FLOAT,
+
+                latency_ms FLOAT,
+
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             """
         )

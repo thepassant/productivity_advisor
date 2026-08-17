@@ -17,6 +17,15 @@ INDEX_FIELDS = [
 def load_index(data_path="data/cleaned_data.csv"):
     df = pd.read_csv(data_path)
 
+    # Make sure all fields used by MinSearch
+    # contain strings.
+    for field in INDEX_FIELDS:
+        df[field] = (
+            df[field]
+            .fillna("")
+            .astype(str)
+        )
+
     documents = df.to_dict(orient="records")
 
     index = minsearch.Index(

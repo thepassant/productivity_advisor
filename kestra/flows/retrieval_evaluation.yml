@@ -1,0 +1,21 @@
+id: productivity_advisor_retrieval_evaluation
+namespace: productivity_advisor
+
+description: |
+  Evaluate the retrieval performance of the Productivity Advisor
+  using the ground truth retrieval dataset.
+
+tasks:
+
+  - id: run_retrieval_evaluation
+    type: io.kestra.plugin.scripts.python.Commands
+    namespaceFiles:
+      enabled: true
+    commands:
+      - python -m productivity_advisor.retrieval_evaluation
+
+triggers:
+
+  - id: weekly
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 0 * * 1"

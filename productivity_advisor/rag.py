@@ -2,21 +2,21 @@ import json
 from time import time
 
 import dotenv
-from openai import OpenAI
 
-from productivity_advisor.search import hybrid_search
+
+from productivity_advisor.search import retrieve
+from productivity_advisor.openai import client
 
 dotenv.load_dotenv()
 
-client = OpenAI()
 
 
 # -----------------------------
 # MODELS
 # -----------------------------
 
-DEFAULT_MODEL = "gpt-4.5-mini"
-EVAL_MODEL = "gpt-4.5-mini"
+DEFAULT_MODEL = "gpt-5.4-mini"
+EVAL_MODEL = "gpt-5.4-mini"
 
 
 # -----------------------------
@@ -250,13 +250,21 @@ def calculate_total_cost(usages):
 # FULL RAG PIPELINE
 # -----------------------------
 
-def rag(query, model=DEFAULT_MODEL):
+def rag(
+    query,
+    model=DEFAULT_MODEL,
+    retrieval_method="hybrid",
+):
     start_time = time()
 
     # Retrieve relevant documents
     search_start = time()
 
-    search_results = hybrid_search(query)
+    
+    search_results = retrieve(
+    query,
+    method=retrieval_method,
+)
 
     search_time = time() - search_start
 
@@ -317,6 +325,8 @@ def rag(query, model=DEFAULT_MODEL):
         "model_used": model,
 
         "response_time": response_time,
+
+        "retrieval_method": retrieval_method,
 
         "search_time": search_time,
 

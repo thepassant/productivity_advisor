@@ -1,5 +1,4 @@
 services:
-
   postgres:
     image: postgres:17
     container_name: productivity-advisor-pg
@@ -11,6 +10,7 @@ services:
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
 
     healthcheck:
       test:
@@ -24,7 +24,9 @@ services:
 
   app:
     build: .
+    image: productivity-advisor:latest
     container_name: productivity-advisor-app
+
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
 
@@ -42,5 +44,59 @@ services:
       postgres:
         condition: service_healthy
 
+  kestra:
+    image: kestra/kestra:latest
+    container_name: productivity-advisor-kestra
+
+    command: server standalone
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - kestra_data:/app/storage
+
+    environment:
+      KESTRA_CONFIGURATION: |
+        kestra:
+          repository:
+            type: postgres
+          storage:
+            type: local
+            local:
+              base-path: /app/storage
+          queue:
+            type: postgres
+
+        datasources:
+          postgres:
+            url: jdbc:postgresql://postgres:5432/${KESTRA_DB}
+            username: ${POSTGRES_USER}
+            password: ${POSTGRES_PASSWORD}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  grafana:
+    image: grafana/grafana:12.1.1
+    container_name: productivity-advisor-grafana
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:
+  kestra_data:
+  grafana_data:

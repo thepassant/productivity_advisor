@@ -5,6 +5,7 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 from productivity_advisor.ingest import load_index
+from productivity_advisor.openai import client
 
 
 DATA_PATH = os.getenv(
@@ -112,9 +113,9 @@ def hybrid_search(
     query_embedding = embed_texts(query)
 
     document_texts = [
-        doc["full_text"]
+        document_to_text(doc)
         for doc in candidates
-    ]
+    ]   
 
     document_embeddings = embed_texts(document_texts)
 
@@ -146,3 +147,89 @@ def hybrid_search(
     ]
 
     return top_docs
+def document_to_text(doc):
+    fields = [
+        "task",
+        "category",
+        "difficulty",
+        "duration_estimate",
+        "framework_name",
+        "reasoning",
+        "instructions",
+        "tags",
+    ]
+
+    return " ".join(
+        str(doc.get(field, ""))
+        for field in fields
+    )
+
+def semantic_search(
+    query,
+    filters=None,
+    k_candidates=50,
+    k_final=10,
+):
+    if filters is None:
+        filters = {}
+
+    candidates = index.search(
+        query=query,
+        filter_dict=filters,
+        boost_dict=BOOST,
+        num_results=k_candidates,
+    )
+
+    if not candidates:
+        return []
+
+    query_embedding = embed_texts(query)
+
+    document_texts = [
+        document_to_text(doc)
+        for doc in candidates
+    ]
+
+    document_embeddings = embed_texts(
+        document_texts
+    )
+
+    semantic_scores = cosine_similarity(
+        [query_embedding],
+        document_embeddings,
+    )[0]
+
+    ranked_indices = np.argsort(
+        -semantic_scores
+    )
+
+    return [
+        candidates[i]
+        for i in ranked_indices[:k_final]
+    ]
+
+def retrieve(
+    query,
+    method="hybrid",
+):
+    if method == "keyword":
+        return search(
+            query,
+            num_results=10,
+        )
+
+    if method == "semantic":
+        return semantic_search(
+            query,
+            k_final=10,
+        )
+
+    if method == "hybrid":
+        return hybrid_search(
+            query,
+            k_final=10,
+        )
+
+    raise ValueError(
+        f"Unknown retrieval method: {method}"
+    )

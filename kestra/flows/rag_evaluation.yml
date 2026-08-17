@@ -1,0 +1,21 @@
+id: productivity_advisor_rag_evaluation
+namespace: productivity_advisor
+
+description: |
+  Evaluate the Productivity Advisor RAG pipeline
+  using an LLM-as-a-Judge.
+
+tasks:
+
+  - id: run_rag_evaluation
+    type: io.kestra.plugin.scripts.python.Commands
+    namespaceFiles:
+      enabled: true
+    commands:
+      - python -m productivity_advisor.rag_evaluation
+
+triggers:
+
+  - id: weekly
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 1 * * 1"
