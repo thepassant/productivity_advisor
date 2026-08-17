@@ -10,9 +10,53 @@ Built as a project for the [DataCamp LLM Zoomcamp](https://github.com/DataTalksC
 
 **Productivity Advisor** is an AI assistant designed to help users become more productive by recommending appropriate productivity frameworks, suggesting tasks, improving planning, and reducing overwhelm.
 
-Instead of relying only on a language model's general knowledge, the application retrieves relevant productivity tasks from a curated dataset and uses the retrieved information as context for the LLM.
-
 The application also stores conversations and user feedback so that interactions can be analyzed and the system can be monitored over time.
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                         User
+                           │
+                           ▼
+                     Streamlit UI
+                           │
+                           ▼
+                       FastAPI
+                           │
+                           ▼
+                    RAG Pipeline
+                           │
+             ┌─────────────┴─────────────┐
+             ▼                           ▼
+       Query Retrieval              LLM Generation
+             │                           │
+      ┌──────┴──────┐                    │
+      ▼             ▼                    ▼
+   Keyword       Semantic              Answer
+   Search         Search                 │
+      │             │                    ▼
+      └──────┬──────┘              LLM Evaluation
+             │                           │
+             ▼                           │
+       Hybrid Ranking                    │
+             │                           │
+             └───────────┬───────────────┘
+                         ▼
+                    PostgreSQL
+                         │
+               ┌─────────┴─────────┐
+               ▼                   ▼
+             Grafana             Feedback
+               │
+               ▼
+         Monitoring Dashboard
+
+Kestra
+   │
+   └── Automated evaluation / ingestion workflows
+```
 
 ---
 
@@ -57,25 +101,25 @@ The dataset contains approximately 250 productivity task records. Each record re
 
 ### Dataset Fields
 
-| Column | Description |
-|---|---|
-| `task` | The task or activity |
-| `category` | Task category such as Work, Study, Home, Fitness, Personal, or Creative |
-| `difficulty` | Estimated task difficulty |
-| `duration_estimate` | Estimated completion time |
-| `framework_name` | Recommended productivity framework |
-| `reasoning` | Why the framework fits the task |
-| `instructions` | Step-by-step guidance |
-| `tags` | Keywords describing the task |
+| Column              | Description                                                             |
+| ------------------- | ----------------------------------------------------------------------- |
+| `task`              | The task or activity                                                    |
+| `category`          | Task category such as Work, Study, Home, Fitness, Personal, or Creative |
+| `difficulty`        | Estimated task difficulty                                               |
+| `duration_estimate` | Estimated completion time                                               |
+| `framework_name`    | Recommended productivity framework                                      |
+| `reasoning`         | Why the framework fits the task                                         |
+| `instructions`      | Step-by-step guidance                                                   |
+| `tags`              | Keywords describing the task                                            |
 
 ### Example
 
-| Task | Category | Framework |
-|---|---|---|
-| Write a project summary | Work | Time Blocking |
-| Organize pantry shelves | Home | Task Decomposition |
-| Review study notes | Study | Spaced Repetition |
-| Practice breathing meditation | Personal | Habit Stacking |
+| Task                          | Category | Framework          |
+| ----------------------------- | -------- | ------------------ |
+| Write a project summary       | Work     | Time Blocking      |
+| Organize pantry shelves       | Home     | Task Decomposition |
+| Review study notes            | Study    | Spaced Repetition  |
+| Practice breathing meditation | Personal | Habit Stacking     |
 
 ---
 
@@ -144,11 +188,12 @@ The application uses a hybrid Retrieval-Augmented Generation pipeline.
                                       │
                               ┌───────┴────────┐
                               │                │
-                        Conversations       Feedback 
+                        Conversations       Feedback
 
 ```
 
---- 
+---
+
 # ⚙️ How It Works
 
 The application follows a Retrieval-Augmented Generation workflow:
@@ -195,14 +240,14 @@ The application uses **MinSearch** to retrieve candidate documents based on text
 
 Different fields are given different boost values:
 
-| Field | Boost |
-|---|---:|
-| `task` | 2.5 |
-| `reasoning` | 2.2 |
-| `instructions` | 1.8 |
-| `tags` | 1.4 |
-| `category` | 1.1 |
-| `difficulty` | 0.9 |
+| Field          | Boost |
+| -------------- | ----: |
+| `task`         |   2.5 |
+| `reasoning`    |   2.2 |
+| `instructions` |   1.8 |
+| `tags`         |   1.4 |
+| `category`     |   1.1 |
+| `difficulty`   |   0.9 |
 
 The system first retrieves up to 50 keyword-based candidates.
 
@@ -213,15 +258,18 @@ The retrieved candidates are then compared using embeddings generated with:
 ```text
 text-embedding-3-small
 ```
+
 Cosine similarity is used to calculate semantic similarity between the user query and the retrieved documents.
 
 Final Ranking
 
 The final hybrid score combines keyword and semantic scores:
+
 ```text
 Hybrid Score = 0.4 × Keyword Score + 0.6 × Semantic Score
 
 ```
+
 The highest-ranked documents are then returned to the RAG pipeline.
 
 ---
@@ -232,15 +280,15 @@ The application uses an OpenAI language model to generate the final productivity
 
 The RAG prompt provides the model with:
 
-* The user's question
-* Retrieved productivity tasks
-* Categories
-* Difficulty
-* Duration estimates
-* Productivity frameworks
-* Instructions
-* Reasoning
-* Tags
+- The user's question
+- Retrieved productivity tasks
+- Categories
+- Difficulty
+- Duration estimates
+- Productivity frameworks
+- Instructions
+- Reasoning
+- Tags
 
 The retrieved context is used as the basis for generating the recommendation.
 
@@ -248,20 +296,34 @@ The retrieved context is used as the basis for generating the recommendation.
 
 # 📈 Evaluation
 
-The project includes both retrieval evaluation and RAG answer evaluation.
+The project evaluates both the retrieval layer and the final LLM-generated answers.
 
-Evaluation data is stored in the [data/](data) directory.
+## Retrieval Evaluation
 
-Retrieval Evaluation
+The retrieval pipeline evaluates multiple retrieval strategies:
 
-The initial MinSearch retrieval approach without field boosting achieved:
+- Keyword search using MinSearch
+- Semantic search using OpenAI embeddings
+- Hybrid search combining keyword and semantic scores
 
-Hit Rate: 80%
-MRR: 60%
+The retrieval evaluation is run against the ground-truth retrieval dataset:
 
-The retrieval dataset is stored in: [ground-truth-retrieval.csv](data/ground-truth-retrieval.csv)
+[data/ground-truth-retrieval.csv](data/ground-truth-retrieval.csv)
 
----
+### Baseline
+
+The initial MinSearch keyword retrieval approach was evaluated before
+introducing semantic and hybrid retrieval.
+
+| Retrieval Method             | Hit Rate | MRR |
+| ---------------------------- | -------: | --: |
+| Keyword / MinSearch baseline |      80% | 60% |
+
+Semantic and hybrid retrieval are also implemented and are being evaluated
+against the same evaluation dataset.
+
+The final retrieval configuration is selected based on the evaluation
+results.
 
 ## RAG Evaluation
 
@@ -269,44 +331,81 @@ The generated answers are evaluated using an LLM-as-a-Judge approach.
 
 The evaluator classifies generated responses as:
 
-* RELEVANT
-* PARTLY_RELEVANT
-* NON_RELEVANT
+- RELEVANT
+- PARTLY_RELEVANT
+- NON_RELEVANT
 
-The evaluation dataset is stored in: [rag-eval-4o-mini.csv](data/rag-eval-gpt-4o-mini.csv)
-For the GPT-4o-mini evaluation across 200 records: 
+The evaluation dataset is stored in: [rag-eval-gpt-4o-mini.csv](data/rag-eval-gpt-4o-mini.csv)
+For the GPT-4o-mini evaluation across 200 records:
 
 156 (78%) RELEVANT
 36 (18%) PARTLY_RELEVANT
 8 (4%) NON_RELEVANT
 
-GPT-4o was also tested and produced similar results to the GPT-5.4-mini configuration.
-
 ---
 
 # 📊 Monitoring
 
-The RAG pipeline tracks several metrics for each request:
+The application stores operational metrics and user feedback in PostgreSQL.
 
-* Response time
-* Prompt tokens
-* Completion tokens
-* Total tokens
-* Evaluation prompt tokens
-* Evaluation completion tokens
-* Evaluation total tokens
-* OpenAI cost
-* Relevance classification
-* Relevance explanation
+Grafana is connected directly to the PostgreSQL database and provides a
+monitoring dashboard for analyzing application performance and user
+interactions.
 
-This information can be used to monitor system performance, model usage, and operating costs.
+The dashboard monitors:
+
+- Response time
+- Token usage
+- OpenAI cost
+- Relevance classification
+- User feedback
+- Request volume
+
+### Monitoring Architecture
+
+```text
+User
+ │
+ ▼
+Streamlit
+ │
+ ▼
+FastAPI
+ │
+ ▼
+RAG Pipeline
+ │
+ ├── Performance Metrics
+ ├── Token Usage
+ ├── Cost
+ └── Relevance Evaluation
+       │
+       ▼
+   PostgreSQL
+       │
+       ▼
+    Grafana
+       │
+       ▼
+ Monitoring Dashboard
+
+```
+
+### The dashboard contains charts for:
+
+1- Request volume over time
+2- Average response time
+3- Token usage
+4- OpenAI cost
+5- User feedback
 
 ---
 
 # 🗄️ Database
 
 The db/ directory contains the database components:
-```bash 
+
+```bash
 db/
 ├── db.py
 └── db_prep.py
@@ -315,6 +414,7 @@ db/
 The database layer is used to support persistence of application data such as conversations and user feedback.
 
 ---
+
 ### Main Components
 
 #### `productivity_advisor/`
@@ -324,7 +424,7 @@ Core application logic.
 - **`ingest.py`** — Loads the productivity dataset and builds the MinSearch index.
 - **`search.py`** — Implements keyword search and hybrid keyword/semantic retrieval.
 - **`rag.py`** — Orchestrates retrieval, context construction, LLM generation, evaluation, token tracking, and cost calculation.
-- **`openai_client.py`** — Provides the shared OpenAI client used across the application.
+- **`openai.py`** — Provides the shared OpenAI client used across the application.
 
 #### `app/`
 
@@ -356,6 +456,23 @@ Defines the containerized application environment.
 
 Provides convenient commands for project development and execution.
 
+## Environment Variables
+
+Create a `.env` file in the project root:
+
+```text
+OPENAI_API_KEY=your_openai_api_key
+
+POSTGRES_DB=productivity_advisor
+POSTGRES_USER=productivity_user
+POSTGRES_PASSWORD=your_database_password
+
+KESTRA_DB=kestra
+
+GRAFANA_ADMIN_USER=admin
+GRAFANA_ADMIN_PASSWORD=your_grafana_password
+```
+
 ---
 
 # 🛠️ Tech Stack
@@ -369,6 +486,8 @@ Provides convenient commands for project development and execution.
 - **scikit-learn**
 - **Cosine Similarity**
 - **PostgreSQL**
+- **Kestra**
+- **Grafana**
 - **Docker**
 - **Docker Compose**
 - **uv**
@@ -383,23 +502,29 @@ Provides convenient commands for project development and execution.
 git clone https://github.com/thepassant/productivity-advisor.git
 cd productivity-advisor
 ```
+
 ## 2. Install dependencies
 
 This project uses uv for dependency management.
+
 ```bash
 uv sync
 ```
+
 ## 3. Configure environment variables
 
 Create a .env file and configure the required environment variables, including your OpenAI API key and database configuration.
 
 For example:
+
 ```text
 OPENAI_API_KEY=your_api_key
 ```
- ---
+
+---
 
 # 🚀 Running the Project
+
 ## Local Development
 
 Start the API:
@@ -416,25 +541,31 @@ uv run streamlit run app/app.py
 
 The Streamlit application communicates with the API, which runs the RAG pipeline.
 
-
 ## Running with Docker
 
-The repository includes:
+The complete application environment is defined in `compose.yaml`.
 
-```bash
-Dockerfile
-compose.yaml
-```
+The Docker Compose environment contains:
 
-The application can therefore be run as a containerized service.
+- **app** — FastAPI and Streamlit application
+- **postgres** — PostgreSQL database
+- **kestra** — workflow orchestration
+- **grafana** — monitoring dashboard
 
-Build and start the containers with:
+Build and start all services:
 
 ```bash
 docker compose up --build
 ```
 
-```text 
+| Service   | URL                                            |
+| --------- | ---------------------------------------------- |
+| Streamlit | [http://localhost:8501](http://localhost:8501) |
+| FastAPI   | [http://localhost:8000](http://localhost:8000) |
+| Kestra    | [http://localhost:8080](http://localhost:8080) |
+| Grafana   | [http://localhost:3000](http://localhost:3000) |
+
+```text
 User
  │
  ▼
@@ -482,6 +613,35 @@ RAG Pipeline
         └── Relevance
 
 ```
+
+---
+
+# 🔄 Automated Evaluation with Kestra
+
+Kestra is used to automate the RAG evaluation workflow.
+
+The evaluation flow can be triggered manually and is also scheduled weekly.
+
+```text
+Kestra
+   │
+   ▼
+Python RAG Evaluation
+   │
+   ├── Keyword Retrieval
+   ├── Semantic Retrieval
+   ├── Hybrid Retrieval
+   │
+   ▼
+LLM Evaluation
+   │
+   ▼
+Evaluation Results
+   │
+   ▼
+PostgreSQL
+```
+
 # 💡 Example Questions
 
 Users can interact with Productivity Advisor using natural language.
